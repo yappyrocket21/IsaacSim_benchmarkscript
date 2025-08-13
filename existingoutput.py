@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 try:
     folder_path = Path(input("Enter the folder path: "))
-    csv_path = Path("output.csv")
+    csv_path = Path(input("Enter the output CSV file path (without csv file extension): ")+".csv")
     with csv_path.open("w") as csvfile:
         csvfile.write("Camera Count,Mean FPS,Mean App Update Frametime,GPU Memory Dedicated,System Memory RSS\n")
         for file_path in folder_path.iterdir():
