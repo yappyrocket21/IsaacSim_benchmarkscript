@@ -1,0 +1,3 @@
+Mean App_Update Frametime: 93.23 ms
+Mean Physics Frametime: 0.47 ms
+Mean FPS: 10.726 FPS
