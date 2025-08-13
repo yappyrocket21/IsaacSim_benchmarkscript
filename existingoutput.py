@@ -1,6 +1,6 @@
 #Author: Oscar Van Gelder
 #Date: 2023-10-04
-#Purpose: Given folder of benchmark metrics from either 100x100 or 1080p IsaacSim rendering, generate CSV files measuring Mean FPS, GPU Dedicated Memory after runtime, and System Memory RSS
+#Purpose: Given folder of benchmark metrics from either 100x100 or 1080p IsaacSim rendering, generate CSV files measuring Mean FPS, GPU Dedicated Memory after runtime, Mean App Update Frametime, and System Memory RSS
 #Hypothesis: Linear relationship as camera count increases.
 from pathlib import Path
 import re
@@ -8,11 +8,12 @@ try:
     folder_path = Path(input("Enter the folder path: "))
     csv_path = Path("output.csv")
     with csv_path.open("w") as csvfile:
-        csvfile.write("Camera Count,Mean FPS,GPU Memory Dedicated,System Memory RSS\n")
+        csvfile.write("Camera Count,Mean FPS,Mean App Update Frametime,GPU Memory Dedicated,System Memory RSS\n")
         for file_path in folder_path.iterdir():
             gpuDedMemFlag=0
             with file_path.open("r") as file:
                 meanFPS = 0
+                meanApp = 0
                 gpuMem = 0
                 sysMem = 0
                 cameraCount = re.search(r"output_(\d+)", file_path.name).group(1)
@@ -25,9 +26,11 @@ try:
                         gpuDedMemFlag=1
                     if "Mean FPS:" in line:
                         meanFPS = line.split("Mean FPS:")[1].strip().split("FPS")[0].strip()
+                    if "Mean App_Update Frametime:" in line:
+                        meanApp = line.split("Mean App_Update Frametime:")[1].strip().split("ms")[0].strip()
                     if "System Memory RSS:" in line:
                         sysMem = line.split("System Memory RSS:")[1].strip().split("GB")[0].strip()
-            csvfile.write(f"{cameraCount},{meanFPS},{gpuMem},{sysMem}\n")
+            csvfile.write(f"{cameraCount},{meanFPS},{meanApp},{gpuMem},{sysMem}\n")
 except Exception as e:
     print(f"An error occurred: {e}")
     exit(1)
